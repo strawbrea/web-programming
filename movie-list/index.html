@@ -22,18 +22,21 @@
 <body>
     <div class="container mt-5">
         <div class="row">
-            <div class="col-md-7">
+            <div class="col-md-6">
                 <h1>Classic Sci-Fi Movies</h1>
                 <ul id="movieList" class="list-group mt-3">
                 </ul>
             </div>
-            <div class="col-md-5">
+            <div class="col-md-6">
                 <div id="movieDetails" class="mt-3">
                     <h2>Movie Details</h2>
                     <div id="movieInfo" class="movie-info">
                         <p><strong id="yearDisplay">Year:</strong> <span id="movieYear"></span></p>
                         <p><strong id="directorDisplay">Director:</strong> <span id="movieDirector"></span></p>
                         <p><strong id="plotDisplay">Plot:</strong> <span id="moviePlot"></span></p>
+                    </div>
+                    <div id="movieImage" class="mt-3">
+                        <img id="movieImg" width ="200" src="" alt="Movie Poster">
                     </div>
                 </div>
             </div>
@@ -66,6 +69,7 @@
                 movieYear.textContent = movie.year;
                 movieDirector.textContent = movie.director;
                 moviePlot.textContent = movie.plot;
+                movieImg.src = movie.image;
                 movieInfo.style.display = 'block';
             }
 
