@@ -1,45 +1,94 @@
-<html><body>
-    Hello!
-    <textarea id="myTextArea" rows="4" cols="40"></textarea>
-    <table id="moviesTable" border="1">
-        <thead>
-            <tr>
-                <th>Title</th>
-                <th>Year</th>
-                <th>Director</th>
-                <th>Plot</th>
-            </tr>
-        </thead>
-        <tbody>
-            <!-- Movie data will be inserted here -->
-        </tbody>
-    </table><script>
-    window.onload = function() {
-        textarea = document.getElementById("myTextArea");
-        textarea.value = "Some value --- ";
-        var xhr = new XMLHttpRequest();
-        xhr.open('GET', 'classic_sci_fi_movies.json', true); 
-        console.log("opened")
-        xhr.onreadystatechange = function(event) {
-            if (xhr.readyState == 4 && xhr.status == 200) {
-                var movies = JSON.parse(xhr.responseText);
-                textarea.value = movies[0]["title"]
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Classic Sci-Fi Movies</title>
+    <!-- bootstrap -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        /* <!-- hides the movie details section on launch --> */
+        #movieDetails {          
+            display: none;
+        }
+        .movie-info {
+            display: none;
+        }
+        .selected {
+            background-color:#FFEEF2;
+        }
+    </style>
+</head>
+<body>
+    <div class="container mt-5">
+        <div class="row">
+            <div class="col-md-7">
+                <h1>Classic Sci-Fi Movies</h1>
+                <ul id="movieList" class="list-group mt-3">
+                </ul>
+            </div>
+            <div class="col-md-5">
+                <div id="movieDetails" class="mt-3">
+                    <h2>Movie Details</h2>
+                    <div id="movieInfo" class="movie-info">
+                        <p><strong id="yearDisplay">Year:</strong> <span id="movieYear"></span></p>
+                        <p><strong id="directorDisplay">Director:</strong> <span id="movieDirector"></span></p>
+                        <p><strong id="plotDisplay">Plot:</strong> <span id="moviePlot"></span></p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- bootstrap -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        window.onload = function() {
+            var movieList = document.getElementById('movieList');
+            var movieDetails = document.getElementById('movieDetails');
+            var yearDisplay = document.getElementById('yearDisplay');
+            var movieYear = document.getElementById('movieYear');
+            var directorDisplay = document.getElementById('directorDisplay');
+            var movieDirector = document.getElementById('movieDirector');
+            var plotDisplay = document.getElementById('plotDisplay');
+            var moviePlot = document.getElementById('moviePlot');
+            var movieInfo = document.getElementById('movieInfo');
+
+            // <!-- display details on click -->
+            function displayMovieDetails(movie) {
+                // <!-- clears which movie is selected -->
+                var selectedMovie = document.querySelector('.selected');
+                if (selectedMovie) {
+                    selectedMovie.classList.remove('selected');
+                }
+
+                this.classList.add('selected');
+                movieYear.textContent = movie.year;
+                movieDirector.textContent = movie.director;
+                moviePlot.textContent = movie.plot;
+                movieInfo.style.display = 'block';
             }
-            var tableBody = document.getElementById('moviesTable').getElementsByTagName('tbody')[0];        
-            movies.forEach(function(movie) {
-                        var row = tableBody.insertRow();
-                        var cell1 = row.insertCell(0);
-                        var cell2 = row.insertCell(1);
-                        var cell3 = row.insertCell(2);
-                        var cell4 = row.insertCell(3);
-                        cell1.innerHTML = movie.title;
-                        cell2.innerHTML = movie.year;
-                        cell3.innerHTML = movie.director;
-                        cell4.innerHTML = movie.plot;
+
+            // <!-- load from json file -->
+            var xhr = new XMLHttpRequest();
+            xhr.open('GET', 'classic_sci_fi_movies.json', true);
+            xhr.onreadystatechange = function(event) {
+                if (xhr.readyState == 4 && xhr.status == 200) {
+                    var movies = JSON.parse(xhr.responseText);
+                    movies.forEach(function(movie) {                  // 
+                        var listItem = document.createElement('li');
+                        listItem.textContent = movie.title;
+                        listItem.classList.add('list-group-item', 'movie-list');
+                        listItem.addEventListener('click', function() {
+                            displayMovieDetails.call(this, movie); // <!-- 'this' refers to clicked movie elements -->
+                        });
+                        movieList.appendChild(listItem);
                     });
-        }             
-        console.log("sending")
-        xhr.send()  
-    }
-</script>
-</body></html>
+                    movieDetails.style.display = 'block'; 
+                }
+            };
+            xhr.send();
+        };
+    </script>
+</body>
+</html>
