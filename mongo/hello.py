@@ -1,42 +1,24 @@
 from flask import Flask, jsonify, send_from_directory
+import json
+from mongita import MongitaClientDisk
 
 app = Flask(__name__)
 
-@app.route("/")
-def get_index():
-    me = "Dr D."
-    return f"<p>Hello, {me} from the World!</p>"
 
-@app.route("/hello")
-def get_hello():
-    me = "Dr D."
-    return f"<p>Hello, {me} from the World!</p>"
+# create a mongita client connection
+client = MongitaClientDisk()
 
-@app.route("/goodbye")
-def get_goodbye():
-    me = "Dr D."
-    return f"<p>Goodbye, {me} from the World! Come back soon!</p>"
+# create a movie database
+movie_db = client.movie_db
 
-@app.route("/whatever")
-def get_whatever():
-    return f"<p>I really don't have any strong feelings about that.</p>"
+# create a scifi collection
+scifi_collection = movie_db.scifi_collection
 
-@app.route("/data")
-def get_data():
-    data = [
-        {"name":"suzy","type":"dog"},
-        {"name":"sandy","type":"cat"}
-    ]
-    return jsonify(data)
-
-@app.route("/api/status")
-def get_status():
-    data = [
-        { "name":"suzy", "status":"sleeping"},
-        { "name":"dorothy", "status":"hungry"},
-    ]
-    return jsonify(data)
-
-@app.route('/<path:path>')
-def serve_static(path):
-    return send_from_directory('.', path)
+@app.route("/data/movies/scifi")
+def get_data_movies_scifi():
+   # with open("","r") as f:
+    #    data =json.load(f)
+        data = list(scifi_collection.find({}))
+        for item in data:
+                del item["_id"]
+        return jsonify(data)
